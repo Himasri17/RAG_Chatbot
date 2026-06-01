@@ -7,6 +7,11 @@ from services.youtube.transcript import extract_transcript as yt_transcript
 
 from services.instagram.metadata import extract_metadata as ig_metadata
 from services.instagram.transcript import extract_transcript as ig_transcript
+from preprocessing.cleaner import clean_text
+from preprocessing.chunker import chunk_text
+
+from services.embeddings.embedder import generate_embeddings
+from services.vectorstore.qdrant_client import store_chunks
 
 
 router = APIRouter()
@@ -51,13 +56,29 @@ def process_video(req: VideoRequest):
                 detail="Unsupported URL"
             )
 
+        # ---------- NEW ----------
+        cleaned_text = clean_text(transcript)
+
+        chunks = chunk_text(cleaned_text)
+
+        embeddings = generate_embeddings(chunks)
+
+        store_chunks(
+            chunks=chunks,
+            embeddings=embeddings,
+            metadata=metadata
+        )
+
+        # ---------- RETURN ----------
         return {
 
             "platform": platform,
 
-            "metadata": metadata,
+            "title": metadata.get("title"),
 
-            "transcript": transcript
+            "num_chunks": len(chunks),
+
+            "message": "Stored successfully in Qdrant"
 
         }
 

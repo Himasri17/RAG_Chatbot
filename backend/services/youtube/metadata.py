@@ -88,7 +88,7 @@ def extract_metadata(video_url: str):
     )
 
     data = response.json()
-
+    print(data) 
     if not data["items"]:
 
         raise Exception("Video not found")
