@@ -236,29 +236,33 @@ def process_video(req: VideoRequest):
         )
 
         return {
-
             "platform": platform,
 
-            "title": metadata.get(
-                "title",
-                "Unknown"
+            "title": metadata.get("title", "Unknown"),
+
+            "creator": metadata.get("creator", "Unknown"),
+
+            "views": metadata.get("views", 0),
+
+            "likes": metadata.get("likes", 0),
+
+            "comments": metadata.get("comments", 0),
+
+            "followers": metadata.get("followers", 0),
+
+            "engagement_rate": metadata.get(
+                "engagement_rate",
+                "N/A"
             ),
 
-            "creator": metadata.get(
-                "creator",
+            "upload_date": metadata.get(
+                "upload_date",
                 "Unknown"
-            ),
-
-            "views": metadata.get(
-                "views",
-                0
             ),
 
             "num_chunks": len(chunks),
 
-            "message":
-            "Stored successfully in Qdrant"
-
+            "message": "Stored successfully in Qdrant"
         }
 
     except HTTPException:

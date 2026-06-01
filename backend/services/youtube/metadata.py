@@ -100,37 +100,78 @@ def extract_metadata(video_url: str):
     stats = item["statistics"]
 
     details = item["contentDetails"]
+    
+    channel_id = snippet.get("channelId")
+
+    channel_response = requests.get(
+        f"{BASE}/channels",
+        params={
+            "id": channel_id,
+            "part": "statistics",
+            "key": API_KEY
+        }
+    )
+
+    channel_data = channel_response.json()
+
+    subscribers = 0
+
+    if channel_data.get("items"):
+
+        subscribers = int(
+            channel_data["items"][0]
+            ["statistics"]
+            .get("subscriberCount", 0)
+        )
 
     views = int(stats.get("viewCount", 0))
 
     likes = int(stats.get("likeCount", 0))
 
     comments = int(stats.get("commentCount", 0))
+    
+    engagement_rate = 0
+
+    if views > 0:
+
+        engagement_rate = round(
+            ((likes + comments) / views) * 100,
+            2
+        )
 
     return {
 
-        "video_id": video_id,
+    "video_id": video_id,
 
-        "title": snippet.get("title"),
+    "title": snippet.get("title"),
 
-        "creator": snippet.get("channelTitle"),
+    "creator": snippet.get("channelTitle"),
 
-        "views": views,
+    "views": views,
 
-        "views_fmt": format_count(views),
+    "views_fmt": format_count(views),
 
-        "likes": likes,
+    "likes": likes,
 
-        "likes_fmt": format_count(likes),
+    "likes_fmt": format_count(likes),
 
-        "comments": comments,
+    "comments": comments,
 
-        "duration": parse_duration(
-            details.get("duration", "")
-        ),
+    "followers": subscribers,
 
-        "upload_date": snippet.get(
-            "publishedAt"
-        )
+    "followers_fmt": format_count(
+        subscribers
+    ),
 
-    }
+    "engagement_rate":
+        f"{engagement_rate}%",
+
+    "duration": parse_duration(
+        details.get("duration", "")
+    ),
+
+    "upload_date": snippet.get(
+        "publishedAt"
+    )
+
+}

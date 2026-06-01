@@ -10,7 +10,19 @@ def build_prompt(query: str, chunks: list[str], history: list[dict] = None) -> s
         history_block = "\n".join(formatted)
 
     if history_block:
-        return f"""You are an AI assistant that compares two videos using transcript data.
+        return f"""You are an AI assistant that compares two videos.
+
+The context contains:
+- Transcript chunks
+- Metadata
+- Views
+- Likes
+- Comments
+- Followers
+- Engagement Rate
+
+Answer ONLY from the provided context.
+If a metric is present, use it directly.
 Answer the question using ONLY the provided context. Use conversation history for follow-up questions.
 
 Context (retrieved transcript chunks):

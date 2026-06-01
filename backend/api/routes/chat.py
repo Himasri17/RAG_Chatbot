@@ -24,7 +24,31 @@ class ChatRequestWithHistory(BaseModel):
 def chat(req: ChatRequestWithHistory):
     results = retrieve(req.query)
 
-    chunks = [r.payload["text"] for r in results]
+    chunks = []
+
+    for r in results:
+
+        p = r.payload
+
+        print("\nPAYLOAD:")
+        print(p)
+
+        chunk_context = f"""
+    Title: {p.get('title')}
+    Platform: {p.get('platform')}
+    Creator: {p.get('creator')}
+
+    Views: {p.get('views')}
+    Likes: {p.get('likes')}
+    Comments: {p.get('comments')}
+    Followers: {p.get('followers')}
+    Engagement Rate: {p.get('engagement_rate')}
+
+    Transcript:
+    {p.get('text')}
+    """
+
+        chunks.append(chunk_context)
 
     # Convert history to plain dicts for prompt builder
     history = [{"role": m.role, "content": m.content} for m in (req.history or [])]

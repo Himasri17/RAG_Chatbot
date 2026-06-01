@@ -104,25 +104,30 @@ def store_chunks(
 
             payload={
 
-                "text": chunk,
+            "text": chunk,
 
-                "title": metadata.get(
-                    "title"
-                ),
+            "title": metadata.get("title"),
 
-                "creator": metadata.get(
-                    "creator"
-                ),
+            "platform": metadata.get("platform"),
 
-                "views": metadata.get(
-                    "views"
-                ),
+            "creator": metadata.get("creator"),
 
-                "upload_date": metadata.get(
-                    "upload_date"
-                )
+            "views": metadata.get("views"),
 
-            }
+            "likes": metadata.get("likes"),
+
+            "comments": metadata.get("comments"),
+
+            "followers": metadata.get("followers"),
+
+            "engagement_rate": metadata.get(
+                "engagement_rate"
+            ),
+
+            "upload_date": metadata.get(
+                "upload_date"
+            )
+        }
 
         )
 

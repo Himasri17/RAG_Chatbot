@@ -14,6 +14,7 @@ interface Source {
   chunk: string;
   text: string;
 }
+
 interface VideoInfo {
   url: string;
 
@@ -24,6 +25,16 @@ interface VideoInfo {
   creator?: string;
 
   views?: number;
+
+  likes?: number;
+
+  comments?: number;
+
+  followers?: number;
+
+  engagement_rate?: string;
+
+  upload_date?: string;
 
   num_chunks?: number;
 
@@ -72,29 +83,107 @@ export default function RAGChatbot() {
   };
 
   const handleProcessVideos = async () => {
+
     setIsProcessing(true);
     setProcessingStep(0);
     setProcessingError(null);
+
     setVideoA(null);
     setVideoB(null);
+
     setMessages([]);
+
     const ticker = tickSteps();
+
     try {
+
       const [resA, resB] = await Promise.all([
         processVideo(videoAUrl),
         processVideo(videoBUrl),
       ]);
+
+      console.log("========== VIDEO A ==========");
+      console.log(resA);
+
+      console.log("========== VIDEO B ==========");
+      console.log(resB);
+
       clearInterval(ticker);
-      setProcessingStep(PROCESSING_STEPS.length - 1);
-      if (resA.detail) throw new Error(`Video A: ${resA.detail}`);
-      if (resB.detail) throw new Error(`Video B: ${resB.detail}`);
-      setVideoA({ url: videoAUrl, title: resA.title ?? "Video A", platform: resA.platform ?? detectPlatform(videoAUrl) });
-      setVideoB({ url: videoBUrl, title: resB.title ?? "Video B", platform: resB.platform ?? detectPlatform(videoBUrl) });
+
+      setProcessingStep(
+        PROCESSING_STEPS.length - 1
+      );
+
+      if (resA.detail)
+        throw new Error(
+          `Video A: ${resA.detail}`
+        );
+
+      if (resB.detail)
+        throw new Error(
+          `Video B: ${resB.detail}`
+        );
+
+      setVideoA({
+      url: videoAUrl,
+
+      title: resA.title ?? "Video A",
+
+      platform:
+        resA.platform ??
+        detectPlatform(videoAUrl),
+
+      creator: resA.creator,
+
+      views: resA.views,
+
+      likes: resA.likes,
+
+      comments: resA.comments,
+
+      followers: resA.followers,
+
+      engagement_rate:
+        resA.engagement_rate,
+    });
+
+    setVideoB({
+      url: videoBUrl,
+
+      title: resB.title ?? "Video B",
+
+      platform:
+        resB.platform ??
+        detectPlatform(videoBUrl),
+
+      creator: resB.creator,
+
+      views: resB.views,
+
+      likes: resB.likes,
+
+      comments: resB.comments,
+
+      followers: resB.followers,
+
+      engagement_rate:
+        resB.engagement_rate,
+    });
+
     } catch (err: unknown) {
+
       clearInterval(ticker);
-      setProcessingError(err instanceof Error ? err.message : "Processing failed.");
+
+      setProcessingError(
+        err instanceof Error
+          ? err.message
+          : "Processing failed."
+      );
+
     } finally {
+
       setIsProcessing(false);
+
     }
   };
 
@@ -334,40 +423,69 @@ export default function RAGChatbot() {
                       </div>
 
                       <div className="video-body">
+                      <p className="video-title">
+                        {v.title}
+                      </p>
 
-                        <p className="video-title">
-                          {v.title}
-                        </p>
+                      <span
+                        className={`pill pill-${v.platform}`}
+                      >
+                        {v.platform}
+                      </span>
 
-                        <div className="video-meta">
+                      <div className="stats-grid">
 
-                          <span
-                            className={`pill pill-${v.platform}`}
-                          >
-                            {v.platform}
-                          </span>
-
-                          {v.creator && (
-                            <span className="meta-item">
-                              👤 {v.creator}
-                            </span>
-                          )}
-
-                          {v.views && (
-                            <span className="meta-item">
-                              👁 {Number(
-                                v.views
-                              ).toLocaleString()}
-                            </span>
-                          )}
-
+                        <div className="stat">
+                          <span>👤 Creator</span>
+                          <strong>{v.creator || "N/A"}</strong>
                         </div>
 
-                        <div className="video-status">
-                          ✅ Indexed
+                        <div className="stat">
+                          <span>👁 Views</span>
+                          <strong>
+                            {v.views
+                              ? Number(v.views).toLocaleString()
+                              : "N/A"}
+                          </strong>
+                        </div>
+
+                        <div className="stat">
+                          <span>❤️ Likes</span>
+                          <strong>
+                            {v.likes
+                              ? Number(v.likes).toLocaleString()
+                              : "N/A"}
+                          </strong>
+                        </div>
+
+                        <div className="stat">
+                          <span>💬 Comments</span>
+                          <strong>
+                            {v.comments
+                              ? Number(v.comments).toLocaleString()
+                              : "N/A"}
+                          </strong>
+                        </div>
+
+                        <div className="stat">
+                          <span>👥 Followers</span>
+                          <strong>
+                            {v.followers
+                              ? Number(v.followers).toLocaleString()
+                              : "N/A"}
+                          </strong>
+                        </div>
+
+                        <div className="stat">
+                          <span>📈 Engagement</span>
+                          <strong>
+                            {v.engagement_rate || "N/A"}
+                          </strong>
                         </div>
 
                       </div>
+
+                    </div>
 
                     </div>
 
@@ -755,7 +873,28 @@ export default function RAGChatbot() {
         }
         .msg-user .bubble { background: var(--accent-bg); border-color: #d4d3fc; color: var(--text); }
         .msg-time { font-size: 10px; color: var(--text3); font-family: 'JetBrains Mono', monospace; }
+        .stats-grid {
+          display: grid;
+          grid-template-columns: repeat(2, 1fr);
+          gap: 10px;
+          margin-top: 16px;
+        }
 
+        .stat {
+          background: rgba(255,255,255,0.05);
+          border-radius: 10px;
+          padding: 10px;
+        }
+
+        .stat span {
+          display: block;
+          font-size: 12px;
+          opacity: 0.7;
+        }
+
+        .stat strong {
+          font-size: 14px;
+        }
         /* Sources */
         .sources { margin-top: 4px; }
         .sources-toggle {
