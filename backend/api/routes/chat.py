@@ -35,5 +35,10 @@ def chat(req: ChatRequestWithHistory):
 
     return {
         "answer": answer,
-        "sources": [r.payload["title"] for r in results],
+        "sources": list(
+        set(
+            r.payload["title"]
+            for r in results
+        )
+        )
     }

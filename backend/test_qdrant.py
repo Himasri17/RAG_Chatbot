@@ -1,5 +1,4 @@
 import os
-
 from dotenv import load_dotenv
 from qdrant_client import QdrantClient
 
@@ -7,7 +6,9 @@ load_dotenv("../.env")
 
 client = QdrantClient(
     url=os.getenv("QDRANT_URL"),
-    api_key=os.getenv("QDRANT_API_KEY")
+    api_key=os.getenv("QDRANT_API_KEY"),
+    https=True,
+    timeout=60,
 )
 
 print(client.get_collections())

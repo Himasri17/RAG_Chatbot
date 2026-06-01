@@ -15,18 +15,22 @@ from qdrant_client.models import (
 # Load Environment Variables
 # -----------------------------
 
-load_dotenv("../.env")
+load_dotenv("../../../.env")
 
 QDRANT_URL = os.getenv("QDRANT_URL")
 QDRANT_API_KEY = os.getenv("QDRANT_API_KEY")
+
+print("\n========== QDRANT DEBUG ==========")
+print("URL:", QDRANT_URL)
+print("API KEY EXISTS:", bool(QDRANT_API_KEY))
+print("==================================\n")
 
 # -----------------------------
 # Qdrant Client
 # -----------------------------
 
 client = QdrantClient(
-    url=QDRANT_URL,
-    api_key=QDRANT_API_KEY
+    url=QDRANT_URL
 )
 
 COLLECTION_NAME = "social_media"
@@ -139,20 +143,19 @@ def store_chunks(
 # -----------------------------
 # Search Collection
 # -----------------------------
-
 def search_chunks(
     query_embedding,
     limit=5
 ):
 
-    results = client.search(
+    results = client.query_points(
 
         collection_name=COLLECTION_NAME,
 
-        query_vector=query_embedding.tolist(),
+        query=query_embedding.tolist(),
 
         limit=limit
 
     )
 
-    return results
+    return results.points
