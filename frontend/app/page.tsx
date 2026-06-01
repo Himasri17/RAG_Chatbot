@@ -191,19 +191,69 @@ export default function RAGChatbot() {
                 </div>
               </div>
               <div className="url-fields">
-                <div className="url-field">
-                  <label className="platform-label yt">▶ YouTube URL — Video A</label>
-                  <input className="url-input" placeholder="https://www.youtube.com/watch?v=..." value={videoAUrl} onChange={(e) => setVideoAUrl(e.target.value)} />
-                </div>
-                <div className="url-field">
-                  <label className="platform-label ig">◈ Instagram Reel — Video B</label>
-                  <input className="url-input" placeholder="https://www.instagram.com/reel/..." value={videoBUrl} onChange={(e) => setVideoBUrl(e.target.value)} />
-                </div>
-                <button className="analyze-btn" onClick={handleProcessVideos} disabled={!videoAUrl || !videoBUrl || isProcessing}>
-                  {isProcessing ? "Processing…" : "⬥  Analyze Videos"}
-                </button>
-                {processingError && <div className="error-box">⚠️ {processingError}</div>}
+              <div className="url-field">
+
+                <label className="platform-label">
+                  🎥 Video A URL
+                </label>
+
+                <input
+                  className="url-input"
+                  placeholder="Paste YouTube or Instagram URL"
+                  value={videoAUrl}
+                  onChange={(e) =>
+                    setVideoAUrl(e.target.value)
+                  }
+                />
+
+                <small className="helper-text">
+                  Supports YouTube and Instagram
+                </small>
+
               </div>
+
+              <div className="url-field">
+
+                <label className="platform-label">
+                  🎥 Video B URL
+                </label>
+
+                <input
+                  className="url-input"
+                  placeholder="Paste YouTube or Instagram URL"
+                  value={videoBUrl}
+                  onChange={(e) =>
+                    setVideoBUrl(e.target.value)
+                  }
+                />
+
+                <small className="helper-text">
+                  Supports YouTube and Instagram
+                </small>
+
+              </div>
+
+              <button
+                className="analyze-btn"
+                onClick={handleProcessVideos}
+                disabled={
+                  !videoAUrl ||
+                  !videoBUrl ||
+                  isProcessing
+                }
+              >
+                {isProcessing
+                  ? "Processing..."
+                  : "⬥ Analyze Videos"}
+              </button>
+
+              {processingError && (
+                <div className="error-box">
+                  ⚠️ {processingError}
+                </div>
+              )}
+
+            </div>
             </section>
 
             {/* Step 2 — Processing */}
@@ -227,26 +277,94 @@ export default function RAGChatbot() {
             {/* Step 3 — Video Cards */}
             {videoA && videoB && (
               <section className="card">
+
                 <div className="card-head">
                   <span className="step">3</span>
-                  <div><h2>Comparison Dashboard</h2><p>Both videos indexed and ready to compare</p></div>
+
+                  <div>
+                    <h2>Comparison Dashboard</h2>
+                    <p>
+                      Both videos indexed and ready to compare
+                    </p>
+                  </div>
                 </div>
+
                 <div className="video-grid">
-                  {[{ v: videoA, label: "A" }, { v: videoB, label: "B" }].map(({ v, label }) => (
-                    <div key={label} className="video-card">
-                      <div className={`thumb thumb-${v.platform}`}>
-                        <span className="play">▶</span>
-                        <span className={`platform-tag tag-${v.platform}`}>
-                          {v.platform === "youtube" ? "▶" : "◈"} VIDEO {label}
+
+                  {[
+                    { v: videoA, label: "A" },
+                    { v: videoB, label: "B" },
+                  ].map(({ v, label }) => (
+
+                    <div
+                      key={label}
+                      className="video-card"
+                    >
+
+                      <div
+                        className={`thumb thumb-${v.platform}`}
+                      >
+
+                        <span className="play">
+                          ▶
                         </span>
+
+                        <span
+                          className={`platform-tag tag-${v.platform}`}
+                        >
+                          {v.platform === "youtube"
+                            ? "▶ YouTube"
+                            : "◈ Instagram"}
+                        </span>
+
+                        <span className="video-label">
+                          VIDEO {label}
+                        </span>
+
                       </div>
+
                       <div className="video-body">
-                        <p className="video-title">{v.title}</p>
-                        <span className={`pill pill-${v.platform}`}>{v.platform === "youtube" ? "YouTube" : "Instagram"}</span>
+
+                        <p className="video-title">
+                          {v.title}
+                        </p>
+
+                        <div className="video-meta">
+
+                          <span
+                            className={`pill pill-${v.platform}`}
+                          >
+                            {v.platform}
+                          </span>
+
+                          {v.creator && (
+                            <span className="meta-item">
+                              👤 {v.creator}
+                            </span>
+                          )}
+
+                          {v.views && (
+                            <span className="meta-item">
+                              👁 {Number(
+                                v.views
+                              ).toLocaleString()}
+                            </span>
+                          )}
+
+                        </div>
+
+                        <div className="video-status">
+                          ✅ Indexed
+                        </div>
+
                       </div>
+
                     </div>
+
                   ))}
+
                 </div>
+
               </section>
             )}
 
