@@ -16,8 +16,18 @@ interface Source {
 }
 interface VideoInfo {
   url: string;
+
   title: string;
+
   platform: "youtube" | "instagram";
+
+  creator?: string;
+
+  views?: number;
+
+  num_chunks?: number;
+
+  message?: string;
 }
 
 const PROCESSING_STEPS = [
