@@ -249,7 +249,7 @@ export default function RAGChatbot() {
         <nav>
           {[
             { id: "comparison", icon: "⊞", label: "Compare" },
-            { id: "history",    icon: "◷", label: "History" },
+            // { id: "history",    icon: "◷", label: "History" },
             { id: "settings",   icon: "⚙", label: "Settings" },
           ].map(({ id, icon, label }) => (
             <button
@@ -536,7 +536,7 @@ export default function RAGChatbot() {
                 )}
               </div>
 
-              {/* History sidebar strip */}
+              {/* History sidebar strip
               {activeView === "history" && (
                 <div className="history-strip">
                   <div className="history-head">Past Comparisons</div>
@@ -549,7 +549,7 @@ export default function RAGChatbot() {
                     <div className="history-empty">No history yet</div>
                   )}
                 </div>
-              )}
+              )} */}
 
               {/* Messages */}
               <div className="messages">
