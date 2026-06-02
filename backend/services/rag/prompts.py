@@ -1,48 +1,41 @@
-def build_prompt(query: str, chunks: list[str], history: list[dict] = None) -> str:
+def build_prompt(query: str, chunks: list[str], history=None):
+
     context = "\n\n".join(chunks)
 
-    history_block = ""
-    if history:
-        formatted = []
-        for msg in history:
-            role = "User" if msg["role"] == "user" else "Assistant"
-            formatted.append(f"{role}: {msg['content']}")
-        history_block = "\n".join(formatted)
+    return f"""
+You are an expert video comparison assistant.
 
-    if history_block:
-        return f"""You are an AI assistant that compares two videos.
+The context contains metadata and transcript information
+for Video A and Video B.
 
-The context contains:
-- Transcript chunks
-- Metadata
-- Views
-- Likes
-- Comments
-- Followers
-- Engagement Rate
+IMPORTANT RULES:
 
-Answer ONLY from the provided context.
-If a metric is present, use it directly.
-Answer the question using ONLY the provided context. Use conversation history for follow-up questions.
+1. Use metadata when answering questions about:
+   - Views
+   - Likes
+   - Comments
+   - Followers
+   - Engagement Rate
+   - Creator
 
-Context (retrieved transcript chunks):
-{context}
+2. Use transcript text when answering questions about:
+   - Topics
+   - Themes
+   - Content
+   - Summaries
 
-Conversation History:
-{history_block}
+3. If the user asks for a comparison:
+   - Compare BOTH videos.
+   - Explicitly mention Video A and Video B.
+   - Use the values provided in the context.
 
-Current Question:
-{query}
+4. Never say information is unavailable if it exists in the context.
 
-Answer:"""
-    else:
-        return f"""You are an AI assistant that compares two videos using transcript data.
-Answer the question using ONLY the provided context.
-
-Context (retrieved transcript chunks):
+Context:
 {context}
 
 Question:
 {query}
 
-Answer:"""
+Answer:
+"""
